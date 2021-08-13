@@ -79,6 +79,7 @@ def shrink_area(image):
     return image.subsurface((min_x, min_y, max_x - min_x, max_y - min_y))
 
 def cell_dimensions(image):
+    """return the dimensions of the maze, how many cells in total per side"""
     width, height = image.get_size()
     cell_count = 0
     on_line = False
@@ -90,9 +91,9 @@ def cell_dimensions(image):
             cell_count += 1
             on_line = True
     if (width < height):
-        return cell_count, cell_count * height // width
+        return cell_count, (int) (cell_count * height / width)
     else:
-        return cell_count * width // height, cell_count
+        return (int) (cell_count * width / height), cell_count
 
 def normalize(image, xSize, ySize):
     # find the side length
@@ -100,13 +101,25 @@ def normalize(image, xSize, ySize):
     width, height = image.get_size()
     
     # get the side lengths at x = 1, and y = 1
-    for x in range(height):
-        if almostWhite(image.get_at((x, height // ySize))):
+
+    ySample = 0
+    for y in range(xSize, height, 2 * height // ySize):
+        if not almostWhite(image.get_at((0, y))):
+            ySample = y
+            break
+    for x in range(width):
+        if almostWhite(image.get_at((x, ySample))):
             side_x = x
             break
     
+
+    xSample = 0
+    for x in range(xSize, width, 2 * width // xSize):
+        if not almostWhite(image.get_at((x, 0))):
+            xSample = x
+            break
     for y in range(height):
-        if almostWhite(image.get_at((width // xSize, y))):
+        if almostWhite(image.get_at((xSample, y))):
             side_y = y
             break
 
@@ -119,14 +132,14 @@ def get_maze_data(image, width, height):
     hSize = (image.get_size()[1] - 1) / (height - 1)
 
     data = []
-    for y in range(height):
-        row = []
-        for x in range(width):
+    for x in range(width):
+        col = []
+        for y in range(height):
             px = (int) (x * wSize)
             py = (int) (y * hSize)
             pixel = image.get_at((px, py))
-            row.append(almostWhite(pixel))
-        data.append(row)
+            col.append(almostWhite(pixel))
+        data.append(col)
     return data
 
 

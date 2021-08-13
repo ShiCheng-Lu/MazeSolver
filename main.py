@@ -2,60 +2,80 @@ import pygame
 from PIL import Image
 from algorithm import *
 from imageParser import *
+import sys
+
+image_file = "maze2.png"
 
 pygame.init()
 
-imageFile = "maze.png"
+def init_display_surface():
+    global image_file
+    if len(sys.argv) > 1:
+        imageFile = sys.argv[1]
+    elif image_file != None:
+        imageFile = image_file
+    else:
+        imageFile = input("maze file: ")
 
-# initialze display size - 2x image size
-image = pygame.image.load(imageFile)
-image = pygame.transform.scale2x(image)
-x, y = image.get_size()
+    image = pygame.image.load(imageFile)
+    image = pygame.transform.scale2x(image)
 
-screen = pygame.display.set_mode(image.get_size())
-pygame.display.set_caption("Maze")
-clock = pygame.time.Clock()
+    screen = pygame.display.set_mode(image.get_size())
+    pygame.display.set_caption("Maze")
+    
+    return image, screen
 
 
-image = shrink_area(select_area(image, screen))
-dimensions = cell_dimensions(image)
-image = normalize(image, *dimensions)
+def get_data_from_image(image, screen):
+    # get the maze to it's smallest size
+    image = shrink_area(select_area(image, screen))
+    image = enlarge_blacks(image)
+    dimensions = cell_dimensions(image)
+    # shrink the maze image more to center sample locations
+    image = normalize(image, *dimensions)
+    return get_maze_data(image, *dimensions), image, dimensions
 
-screen = pygame.display.set_mode(image.get_size())
+def plot_availiable_paths(surface, data, dimensions):
+    width, height = dimensions
+    wSize = (surface.get_size()[0] - 1) / (width - 1)
+    hSize = (surface.get_size()[1] - 1) / (height - 1)
 
-screen.blit(image, (5, 5))
-pygame.draw.rect(screen, (140, 140, 140), pygame.Rect(5, 5, 900, 900), 1)
+    for x in range(len(data)):
+        for y in range(len(data[0])):
+            if (data[x][y]):
+                pygame.draw.circle(surface, (0, 0, 0), (x * wSize, y * hSize), 1)
+            else:
+                pygame.draw.circle(surface, (255, 255, 255), (x * wSize, y * hSize), 1)
 
-print(dimensions)
+def show_maze_solve(surface, maze, dimensions):
+    clock = pygame.time.Clock()
 
-data = get_maze_data(image, *dimensions)
+    width, height = dimensions
+    wSize = (surface.get_size()[0] - 1) / (width - 1)
+    hSize = (surface.get_size()[1] - 1) / (height - 1)
 
-width, height = cell_dimensions(image)
-wSize = (image.get_size()[0] - 1) / (width - 1)
-hSize = (image.get_size()[1] - 1) / (height - 1)
+    done = False
+    while not done:
+        path = surface.copy()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True
+            
+        maze.step()
 
-for x in range(len(data)):
-    for y in range(len(data[0])):
-        if (data[x][y]):
-            pygame.draw.circle(image, (0, 0, 0), (x * wSize, y * hSize), 1)
-        else:
-            pygame.draw.circle(image, (255, 255, 255), (x * wSize, y * hSize), 1)
+        maze.draw(path, (wSize, hSize), (0, 0))
 
-# print(len(data))
+        screen.blit(path, (0, 0))
+        pygame.display.flip()
+        clock.tick(240)
 
-maze = MazeSolver(data)
+if __name__ == "__main__":
+    image, screen = init_display_surface()
 
-done = False
-while not done:
-    path = image.copy()
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            done = True
-        
-    maze.step()
+    data, image, dimensions = get_data_from_image(image, screen)
+    screen = pygame.display.set_mode(image.get_size())
 
-    maze.draw(path, (wSize, hSize), (0, 0))
-
-    screen.blit(path, (0, 0))
-    pygame.display.flip()
-    clock.tick(240)
+    # plot_availiable_paths(image, data, dimensions)
+    # create the maze class with the path data
+    maze = MazeSolver(data)
+    show_maze_solve(image, maze, dimensions)

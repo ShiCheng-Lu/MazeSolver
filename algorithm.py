@@ -16,7 +16,7 @@ class MazeSolver:
 
         print(self.current, self.end)
         # set the state
-        self.state = [[0 for y in range(self.width)] for x in range(self.height)]
+        self.state = [[0 for y in range(self.height)] for x in range(self.width)]
     
     def _find_start_end(self):
         self.exits = []
@@ -88,6 +88,6 @@ class MazeSolver:
         
 
     def draw(self, surface, scale, offset):
-        line_path = [(y * scale[0] + offset[0], x * scale[1] + offset[1]) for x, y in self.path]
-        line_path.append((self.current[1] * scale[1] + offset[1], self.current[0] * scale[0] + offset[0]))
-        pygame.draw.lines(surface, (0, 0, 0), False, line_path, 5)
+        line_path = [(x * scale[0] + offset[0], y * scale[1] + offset[1]) for x, y in self.path]
+        line_path.append((self.current[0] * scale[0] + offset[0], self.current[1] * scale[1] + offset[1]))
+        pygame.draw.lines(surface, (0, 0, 0), False, line_path, 3)
