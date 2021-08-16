@@ -2,13 +2,14 @@ import pygame
 from PIL import Image
 from mazeSolverDeadend import *
 from mazeSolverRecursive import *
+from mazeSolverShortest import *
 
 from imageParser import *
 import sys
 
 image_file = "maze2.png"
-speed = 60 # step per second
-strategy = MazeSolverRecursive
+speed = 240 # step per second
+strategy = MazeSolverShortest
 
 pygame.init()
 
@@ -66,7 +67,6 @@ def show_maze_solve(surface, maze, dimensions):
                 done = True
             
         maze.step()
-
         maze.draw(path, (wSize, hSize), (0, 0))
 
         screen.blit(path, (0, 0))

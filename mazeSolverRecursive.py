@@ -1,5 +1,4 @@
 import pygame
-import copy
 
 class MazeSolverRecursive:
     def __init__(self, maze):
