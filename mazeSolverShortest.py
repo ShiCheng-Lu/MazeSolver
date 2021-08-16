@@ -1,17 +1,9 @@
 import pygame
+from mazeSolver import *
 
-class MazeSolverShortest:
+class MazeSolverShortest(MazeSolver):
     def __init__(self, maze):
-        self.maze = maze
-        self.width = len(maze)
-        self.height = len(maze[0])
-
-        self._find_start_end()
-
-        self.start = self.exits[0]
-        self.end = self.exits[-1]
-
-        self.complete = False
+        super().__init__(maze)
 
         self.max_dist = self.width * self.height
         self.shortest = [[self.max_dist for y in range(self.height)] for x in range(self.width)]
@@ -40,13 +32,6 @@ class MazeSolverShortest:
     
     def _in_path(self, location):
         return location in self.path
-    
-    def _valid_loc(self, location):
-        if (location[0] < 0 or location[0] >= self.width):
-            return False
-        if (location[1] < 0 or location[1] >= self.height):
-            return False
-        return True
     
     def _update_neighbour(self, x, y, dist):
         min_coord = (0, 0)
@@ -97,6 +82,9 @@ class MazeSolverShortest:
             self.complete = True
 
     def draw(self, surface, scale, offset):
+        '''
+        draw the solving process on the maze
+        '''
         dot_size = 3
         if self.complete:
             dot_size = 1

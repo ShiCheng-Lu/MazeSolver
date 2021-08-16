@@ -21,6 +21,10 @@ def enlarge_blacks(image):
 
 
 def select_area(image, screen):
+    '''
+    display the image and let the user select an
+    area of the image that would be the maze
+    '''
     done = False
     defined = False
     while not done:
@@ -59,6 +63,11 @@ def select_area(image, screen):
 
 
 def shrink_area(image):
+    '''
+    reduce the image area so that the edges of the image
+    is the edges of the maze
+    blacks are the walls; whites are the open path
+    '''
     width, height = image.get_size()
     min_x, min_y = width, height
     max_x, max_y = 0, 0
@@ -79,7 +88,9 @@ def shrink_area(image):
     return image.subsurface((min_x, min_y, max_x - min_x, max_y - min_y))
 
 def cell_dimensions(image):
-    """return the dimensions of the maze, how many cells in total per side"""
+    '''
+    return the dimensions of the maze, how many cells in total per side
+    '''
     width, height = image.get_size()
     cell_count = 0
     on_line = False
@@ -96,6 +107,9 @@ def cell_dimensions(image):
         return (int) (cell_count * width / height), cell_count
 
 def normalize(image, xSize, ySize):
+    '''
+
+    '''
     # find the side length
     side_x, side_y = 0, 0
     width, height = image.get_size()
@@ -125,9 +139,13 @@ def normalize(image, xSize, ySize):
 
     delta_x = side_x // 2
     delta_y = side_y // 2
-    return image.subsurface((delta_x, delta_y, width - delta_x, height - delta_y))
+    return image.subsurface((delta_x, delta_y, width - side_x + 2, height - side_y + 2))
 
 def get_maze_data(image, width, height):
+    '''
+    return a maze data structure from a image,
+    width and height are the number of cells in each dimension
+    '''
     wSize = (image.get_size()[0] - 1) / (width - 1)
     hSize = (image.get_size()[1] - 1) / (height - 1)
 

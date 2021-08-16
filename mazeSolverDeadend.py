@@ -1,17 +1,17 @@
 import pygame
+from mazeSolver import *
 
-
-class MazeSolverDeadend:
+class MazeSolverDeadend(MazeSolver):
     def __init__(self, maze):
-        self.maze = maze
-        self.width = len(maze)
-        self.height = len(maze[0])
+        super().__init__(maze)
 
-        # self._find_start_end()
         self.filled = [[False for y in range(self.height)] for x in range(self.width)]
         self.complete = False
 
     def _neighbours(self, x, y):
+        '''
+        count number of neighbours that are walls/deadends
+        '''
         count = 0
         for dx, dy in [(-1, 0), (1, 0), (0, 1), (0, -1)]:
             fx = x + dx
@@ -27,22 +27,28 @@ class MazeSolverDeadend:
         return count
 
     def step(self):
+        '''
+        take one loop through the maze and fill any dead ends
+        '''
         if self.complete:
             return
-        stepped = False
+        self.complete = True
         temp_filled = []
         for x in range(self.width):
             for y in range(self.height):
+                if self.maze[x][y]:
+                    continue
                 if self._neighbours(x, y) >= 3:
                     temp_filled.append((x, y))
-                    stepped = True
+                    self.complete = False
         for x, y in temp_filled:
             self.filled[x][y] = True
-        if not stepped:
-            self.complete = True
 
         
     def draw(self, surface, scale, offset):
+        '''
+        draw the solving process on the maze
+        '''
         for x in range(self.width):
             for y in range(self.height):
                 if self.filled[x][y]:

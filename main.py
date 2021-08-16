@@ -9,11 +9,15 @@ import sys
 
 image_file = "maze2.png"
 speed = 240 # step per second
-strategy = MazeSolverShortest
+strategy = MazeSolverDeadend
 
 pygame.init()
 
 def init_display_surface():
+    '''
+    open the maze file and create a screen
+    based in the image size
+    '''
     global image_file
     if len(sys.argv) > 1:
         imageFile = sys.argv[1]
@@ -23,7 +27,10 @@ def init_display_surface():
         imageFile = input("maze file: ")
 
     image = pygame.image.load(imageFile)
-    image = pygame.transform.scale2x(image)
+    width, height = image.get_size()
+    while (width < 500 and height < 300):
+        image = pygame.transform.scale2x(image)
+        width, height = image.get_size()
 
     screen = pygame.display.set_mode(image.get_size())
     pygame.display.set_caption("Maze")
@@ -32,6 +39,9 @@ def init_display_surface():
 
 
 def get_data_from_image(image, screen):
+    '''
+    retrieve the maze data from the image
+    '''
     # get the maze to it's smallest size
     image = shrink_area(select_area(image, screen))
     image = enlarge_blacks(image)
@@ -41,6 +51,12 @@ def get_data_from_image(image, screen):
     return get_maze_data(image, *dimensions), image, dimensions
 
 def plot_availiable_paths(surface, data, dimensions):
+    '''
+    draw a white dot for everywhere that the program decide has a wall
+    draw a black dot for everywhere that the program decide is open
+
+    for debug only
+    '''
     width, height = dimensions
     wSize = (surface.get_size()[0] - 1) / (width - 1)
     hSize = (surface.get_size()[1] - 1) / (height - 1)
@@ -53,6 +69,9 @@ def plot_availiable_paths(surface, data, dimensions):
                 pygame.draw.circle(surface, (255, 255, 255), (x * wSize, y * hSize), 1)
 
 def show_maze_solve(surface, maze, dimensions):
+    '''
+    display the process of the maze solve
+    '''
     clock = pygame.time.Clock()
 
     width, height = dimensions
