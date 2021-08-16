@@ -1,11 +1,14 @@
 import pygame
 from PIL import Image
 from mazeSolverDeadend import *
+from mazeSolverRecursive import *
+
 from imageParser import *
 import sys
 
 image_file = "maze2.png"
 speed = 60 # step per second
+strategy = MazeSolverRecursive
 
 pygame.init()
 
@@ -78,5 +81,5 @@ if __name__ == "__main__":
 
     # plot_availiable_paths(image, data, dimensions)
     # create the maze class with the path data
-    maze = MazeSolver(data)
+    maze = strategy(data)
     show_maze_solve(image, maze, dimensions)

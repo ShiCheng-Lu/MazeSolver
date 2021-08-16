@@ -1,7 +1,7 @@
 import pygame
 import copy
 
-class MazeSolver:
+class MazeSolverRecursive:
     def __init__(self, maze):
         self.maze = maze
         self.width = len(maze)
