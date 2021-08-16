@@ -138,7 +138,7 @@ def get_maze_data(image, width, height):
             px = (int) (x * wSize)
             py = (int) (y * hSize)
             pixel = image.get_at((px, py))
-            col.append(almostWhite(pixel))
+            col.append(not almostWhite(pixel))
         data.append(col)
     return data
 

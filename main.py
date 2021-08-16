@@ -1,10 +1,11 @@
 import pygame
 from PIL import Image
-from algorithm import *
+from mazeSolverDeadend import *
 from imageParser import *
 import sys
 
 image_file = "maze2.png"
+speed = 60 # step per second
 
 pygame.init()
 
@@ -67,7 +68,7 @@ def show_maze_solve(surface, maze, dimensions):
 
         screen.blit(path, (0, 0))
         pygame.display.flip()
-        clock.tick(240)
+        clock.tick(speed)
 
 if __name__ == "__main__":
     image, screen = init_display_surface()

@@ -21,20 +21,20 @@ class MazeSolver:
     def _find_start_end(self):
         self.exits = []
         for x in range(1, self.width - 1):
-            if (self.maze[x][0]):
+            if (not self.maze[x][0]):
                 self.exits.append((x, 0))
-            if (self.maze[x][self.height - 1]):
+            if (not self.maze[x][self.height - 1]):
                 self.exits.append((x, self.height - 1))
         
         for y in range(1, self.height - 1):
-            if (self.maze[0][y]):
+            if (not self.maze[0][y]):
                 self.exits.append((0, y))
-            if (self.maze[self.width - 1][y]):
+            if (not self.maze[self.width - 1][y]):
                 self.exits.append((self.width - 1, y))
         return
 
     def _can_step(self, location):
-        return self.maze[location[0]][location[1]] == True
+        return not self.maze[location[0]][location[1]]
     
     def _in_path(self, location):
         return location in self.path
